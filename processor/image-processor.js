@@ -5,11 +5,9 @@ const { chunk } = require('lodash');
 const { default: axios } = require('axios');
 const sharp = require('sharp');
 const ImageModel = require(resolve('model/image'));
+const logger = require(resolve('config/logger'));
 
 class ImageProcessor {
-  constructor() {
-    this.logger = console;
-  }
 
   async start() {
     const batchSize = parseInt(process.env.DEFAULT_BATCH_SIZE, 10);
@@ -17,8 +15,8 @@ class ImageProcessor {
     const data = fs.readFileSync(filePath, 'utf-8');
     const rows = this.parseCSV(data);
 
-    this.logger.info(`Batch size: ${batchSize}`);
-    this.logger.info(`Items: ${rows.length}`);
+    logger.info(`Batch size: ${batchSize}`);
+    logger.info(`Items: ${rows.length}`);
 
     const rawList = rows.map(row => ({
       index: row.index,
@@ -29,7 +27,7 @@ class ImageProcessor {
 
     const chunks = chunk(rawList, batchSize);
 
-    this.logger.info('Starting batch...');
+    logger.info('Starting batch...');
 
     for (const chunk of chunks) {
       try {
@@ -37,11 +35,11 @@ class ImageProcessor {
 
         await ImageModel.insertMany(images, { ordered: false });
 
-        this.logger.info(`Processed batch size: ${images.length}`);
-        this.logger.info(`Last processed index: ${chunk[chunk.length - 1].index}, Last processed ID: ${chunk[chunk.length - 1].id}`);
+        logger.info(`Processed batch size: ${images.length}`);
+        logger.info(`Last processed index: ${chunk[chunk.length - 1].index}, Last processed ID: ${chunk[chunk.length - 1].id}`);
 
       } catch (error) {
-        this.logger.error(`Error processing batch: ${error.message}`);
+        logger.error(`Error processing batch: ${error.message}`);
       }
     }
   }
@@ -63,7 +61,7 @@ class ImageProcessor {
       delete rawEntity.url;
       return rawEntity;
     } catch (error) {
-      this.logger.error(`Error creating thumbnail for ID ${rawEntity.id}: ${error.message}`);
+      logger.error(`Error creating thumbnail for ID ${rawEntity.id}: ${error.message}`);
       return null;
     }
   }
