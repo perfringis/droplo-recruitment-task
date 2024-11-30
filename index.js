@@ -1,16 +1,16 @@
 const fs = require('fs');
 const path = require('path');
-const { default: axios } = require('axios');
-const { chunk } = require('lodash');
+const {default: axios} = require('axios');
+const {chunk} = require('lodash');
 const sharp = require('sharp');
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const ImageSchema = new mongoose.Schema({
-    id: { type: String, required: true },
-    index: { type: Number, required: true },
-    thumbnail: { type: Buffer, required: true },
+    id: {type: String, required: true},
+    index: {type: Number, required: true},
+    thumbnail: {type: Buffer, required: true},
 });
 
 const ImageModel = mongoose.model('Image', ImageSchema);
@@ -44,7 +44,7 @@ class ImageProcessor {
             try {
                 const images = await this.processChunk(chunk, batchSize);
 
-                await ImageModel.insertMany(images, { ordered: false });
+                await ImageModel.insertMany(images, {ordered: false});
 
                 this.logger.info(`Processed batch size: ${images.length}`);
                 this.logger.info(`Last processed index: ${chunk[chunk.length - 1].index}, Last processed ID: ${chunk[chunk.length - 1].id}`);
@@ -64,7 +64,7 @@ class ImageProcessor {
 
     async createThumbnail(rawEntity) {
         try {
-            const response = await axios.get(rawEntity.url, { responseType: 'arraybuffer' });
+            const response = await axios.get(rawEntity.url, {responseType: 'arraybuffer'});
             const buffer = await sharp(response.data)
                 .resize(100, 100)
                 .toBuffer();
