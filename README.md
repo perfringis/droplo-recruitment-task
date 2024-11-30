@@ -35,6 +35,8 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
 
 - The Program never runs/executes any csv file.
 - Lack of `start` method invocation from `ImageProcessor` class.
+- The path to `data/data.csv` could not be resolved. Additionally, template literals are not needed.
+- `__dirname` is pointing to the specific directory and that implementation is "fragile" to any changes.
 
 ## What have I done?
 

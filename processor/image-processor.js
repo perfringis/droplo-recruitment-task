@@ -13,7 +13,7 @@ class ImageProcessor {
 
     async start() {
         const batchSize = parseInt(process.env.DEFAULT_BATCH_SIZE, 10);
-        const filePath = join(__dirname, `data/data.csv`);
+        const filePath = resolve(join(process.cwd(), 'data/data.csv'));
         const data = fs.readFileSync(filePath, 'utf-8');
         const rows = this.parseCSV(data);
 
