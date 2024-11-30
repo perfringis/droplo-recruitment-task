@@ -40,7 +40,6 @@ class ImageProcessor {
                 this.logger.info(`Processed batch size: ${images.length}`);
                 this.logger.info(`Last processed index: ${chunk[chunk.length - 1].index}, Last processed ID: ${chunk[chunk.length - 1].id}`);
 
-                if (global.gc) global.gc();
             } catch (error) {
                 this.logger.error(`Error processing batch: ${error.message}`);
             }
