@@ -1,19 +1,13 @@
 const fs = require('fs');
-const path = require('path');
-const {default: axios} = require('axios');
-const {chunk} = require('lodash');
+const { resolve, join } = require('path');
+const { default: axios} = require('axios');
+const { chunk} = require('lodash');
 const sharp = require('sharp');
 const mongoose = require('mongoose');
 
+const ImageModel = require(resolve('model/image'));
+
 mongoose.connect(process.env.MONGO_URI);
-
-const ImageSchema = new mongoose.Schema({
-    id: {type: String, required: true},
-    index: {type: Number, required: true},
-    thumbnail: {type: Buffer, required: true},
-});
-
-const ImageModel = mongoose.model('Image', ImageSchema);
 
 class ImageProcessor {
     constructor() {
@@ -22,7 +16,7 @@ class ImageProcessor {
 
     async start() {
         const batchSize = parseInt(process.env.DEFAULT_BATCH_SIZE, 10);
-        const filePath = path.join(__dirname, `data/data.csv`);
+        const filePath = join(__dirname, `data/data.csv`);
         const data = fs.readFileSync(filePath, 'utf-8');
         const rows = this.parseCSV(data);
 

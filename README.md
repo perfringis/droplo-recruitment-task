@@ -35,3 +35,7 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
 
 - The Program never runs/executes any csv file.
 - Lack of `start` method invocation from `ImageProcessor` class.
+
+## What have I done?
+
+- I moved schema and model to separate directories for better readability.
