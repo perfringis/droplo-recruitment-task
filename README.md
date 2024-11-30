@@ -16,3 +16,13 @@ index, id, url
 Dla uproszczenia mozemy zlozyc ze pliki wieksze niz 120mb powinny byc odrzucane.
 
 Twoim zadaniem bedzie zastanowienie sie nad kodem tej klasy i wypisanie potencjanych bledow w kodzie oraz usprawnien.
+
+## What is missing?
+
+- The proper project structure
+- The instruction to run the project
+- The .env file config for running the app
+
+## What is wrong?
+
+- The index.js file has a lot of responsibilities. The script should be split into smaller ones. 
