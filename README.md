@@ -10,7 +10,7 @@ Struktura pliku csv wyglada nastepujaco:
 
 ```
 index, id, url
-0, 42fb7bba-7f84-433e-88e5-cb20e6243cac, hhttps://placeholder.com/image1.jpg
+0, 42fb7bba-7f84-433e-88e5-cb20e6243cac, https://placeholder.com/image1.jpg
 ```
 
 Dla uproszczenia mozemy zlozyc ze pliki wieksze niz 120mb powinny byc odrzucane.
@@ -22,7 +22,16 @@ Twoim zadaniem bedzie zastanowienie sie nad kodem tej klasy i wypisanie potencja
 - The proper project structure
 - The instruction to run the project
 - The .env file config for running the app
+- The data.csv file with data
 
 ## What is wrong?
 
-- The index.js file has a lot of responsibilities. The script should be split into smaller ones. 
+- The index.js file has a lot of responsibilities. The script should be split into smaller ones.
+
+- useNewUrlParser and useUnifiedTopology are deprecated.
+```js
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
+```
+
+- The Program never runs/executes any csv file.
+- Lack of `start` method invocation from `ImageProcessor` class.

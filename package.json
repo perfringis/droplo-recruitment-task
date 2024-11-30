@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node --env-file=.env ./index.js",
+    "start:dev": "node-dev --env-file=.env ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,5 +16,8 @@
     "lodash": "^4.17.21",
     "mongoose": "^8.8.3",
     "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "node-dev": "^8.0.0"
   }
 }
