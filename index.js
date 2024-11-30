@@ -5,6 +5,6 @@ const ImageProcessor = require(resolve('processor/image-processor'));
 mongoose.connect(process.env.MONGO_URI);
 
 (async () => {
-    const imageProcessor = new ImageProcessor();
-    await imageProcessor.start();
+  const imageProcessor = new ImageProcessor();
+  await imageProcessor.start();
 })();

@@ -24,6 +24,9 @@ importers:
       node-dev:
         specifier: ^8.0.0
         version: 8.0.0
+      prettier:
+        specifier: ^3.4.1
+        version: 3.4.1
 
 packages:
 
@@ -323,6 +326,11 @@ packages:
 
   path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
+
+  prettier@3.4.1:
+    resolution: {integrity: sha512-G+YdqtITVZmOJje6QkXQWzl3fSfMxFwm1tjTyo9exhkmWSqC4Yhd1+lug++IlR2mvRVAxEDDWYkQdeSztajqgg==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
@@ -639,6 +647,8 @@ snapshots:
       which: 2.0.2
 
   path-parse@1.0.7: {}
+
+  prettier@3.4.1: {}
 
   proxy-from-env@1.1.0: {}
 
