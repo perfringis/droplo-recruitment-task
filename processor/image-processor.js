@@ -1,16 +1,21 @@
 const { resolve, join } = require('path');
 const { readFileSync } = require('fs');
 
+const {
+  app: { defaultBatchSize },
+} = require(resolve('config'));
+
 const { chunk } = require('lodash');
 const { default: axios } = require('axios');
 const sharp = require('sharp');
 const ImageModel = require(resolve('model/image'));
+
 const logger = require(resolve('config/logger'));
 
 class ImageProcessor {
 
   async start() {
-    const batchSize = parseInt(process.env.DEFAULT_BATCH_SIZE, 10);
+    const batchSize = parseInt(defaultBatchSize, 10);
     const filePath = resolve(join(process.cwd(), 'data/data.csv'));
     const data = readFileSync(filePath, 'utf-8');
     const rows = this.parseCSV(data);
