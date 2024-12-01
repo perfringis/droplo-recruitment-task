@@ -7,4 +7,4 @@ const ImageSchema = new Schema({
   thumbnail: { type: Buffer, required: true },
 });
 
-exports.ImageSchema = ImageSchema;
+module.exports = ImageSchema;

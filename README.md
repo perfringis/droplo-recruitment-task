@@ -39,6 +39,7 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
 - The `__dirname` is pointing to the specific directory and that implementation is "fragile" to any changes.
 - The `global.gc` will never invoke. Moreover, custom cleaning the memory should be investigated via `--inspect`.
 - Instead of using `console.info` or `console.error`. The project should use logging system such as `winston`.
+- The `batchSize` parameter for `processChunk` function is unused.
 
 ## What have I done?
 
@@ -47,3 +48,4 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
 - Introduced `prettier` for better readability of the code.
 - Removed `global.gc`.
 - Introduced `winston` logging system.
+- Remove `batchSize` parameter from `processChunk` function.

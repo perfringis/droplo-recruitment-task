@@ -37,8 +37,11 @@ lerna-debug.log*
 ## environment variables
 .env
 
-## MongoDB
+# MongoDB
 db
 
-## logger
+# logger
 logs
+
+## yarn
+yarn.lock

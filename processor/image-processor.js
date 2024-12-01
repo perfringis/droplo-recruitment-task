@@ -44,7 +44,7 @@ class ImageProcessor {
     }
   }
 
-  async processChunk(rawEntities, batchSize) {
+  async processChunk(rawEntities) {
     const tasks = rawEntities.map(rawEntity => this.createThumbnail(rawEntity));
 
     return Promise.all(tasks);
