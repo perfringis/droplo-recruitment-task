@@ -1,5 +1,5 @@
 const { resolve, join } = require('path');
-const fs = require('fs');
+const { readFileSync } = require('fs');
 
 const { chunk } = require('lodash');
 const { default: axios } = require('axios');
@@ -12,7 +12,7 @@ class ImageProcessor {
   async start() {
     const batchSize = parseInt(process.env.DEFAULT_BATCH_SIZE, 10);
     const filePath = resolve(join(process.cwd(), 'data/data.csv'));
-    const data = fs.readFileSync(filePath, 'utf-8');
+    const data = readFileSync(filePath, 'utf-8');
     const rows = this.parseCSV(data);
 
     logger.info(`Batch size: ${batchSize}`);
@@ -31,7 +31,7 @@ class ImageProcessor {
 
     for (const chunk of chunks) {
       try {
-        const images = await this.processChunk(chunk, batchSize);
+        const images = await this.processChunk(chunk);
 
         await ImageModel.insertMany(images, { ordered: false });
 

@@ -40,6 +40,8 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
 - The `global.gc` will never invoke. Moreover, custom cleaning the memory should be investigated via `--inspect`.
 - Instead of using `console.info` or `console.error`. The project should use logging system such as `winston`.
 - The `batchSize` parameter for `processChunk` function is unused.
+- Missing secure way of getting information from `.env` file.
+- Mongoose connection in the `index.js` file.
 
 ## What have I done?
 
@@ -49,3 +51,7 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
 - Removed `global.gc`.
 - Introduced `winston` logging system.
 - Remove `batchSize` parameter from `processChunk` function.
+- Installed `dotenv` lib for secure reading variables.
+- Moved `dotenv` config to separate file.
+- Moved `mongoose` connection to separate file.
+- Restructure `.env` file in case of mongo variables.

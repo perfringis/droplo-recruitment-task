@@ -4,15 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file=.env ./index.js",
-    "start:dev": "node-dev --env-file=.env ./index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./index.js",
+    "start:dev": "node-dev ./index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.8",
+    "dotenv": "^16.4.5",
     "lodash": "^4.17.21",
     "mongoose": "^8.8.3",
     "sharp": "^0.33.5"
