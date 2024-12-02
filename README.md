@@ -42,6 +42,8 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
 - The `batchSize` parameter for `processChunk` function is unused.
 - Missing secure way of getting information from `.env` file.
 - Mongoose connection in the `index.js` file.
+- The `DEFAULT_BATCH_SIZE` is not dynamic type of information. Each time app has to be restarted to change that value.
+- The implementation of `start` method creates own `id` in mongo database.
 
 ## What have I done?
 
@@ -55,3 +57,5 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
 - Moved `dotenv` config to separate file.
 - Moved `mongoose` connection to separate file.
 - Restructure `.env` file in case of mongo variables.
+- Removing `DEFAULT_BATCH_SIZE` variable and add parameter to start method with default start value.
+- Rename from `id` to `_id`.

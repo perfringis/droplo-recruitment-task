@@ -1,10 +1,5 @@
-const { resolve, join } = require('path');
-const { readFileSync } = require('fs');
-
-const {
-  app: { defaultBatchSize },
-} = require(resolve('config'));
-
+const { resolve } = require('path');
+const { promises } = require('fs');
 const { chunk } = require('lodash');
 const { default: axios } = require('axios');
 const sharp = require('sharp');
@@ -14,10 +9,8 @@ const logger = require(resolve('config/logger'));
 
 class ImageProcessor {
 
-  async start() {
-    const batchSize = parseInt(defaultBatchSize, 10);
-    const filePath = resolve(join(process.cwd(), 'data/data.csv'));
-    const data = readFileSync(filePath, 'utf-8');
+  async start(batchSize = 120) {
+    const data = await promises.readFile(resolve('data/data.csv'), 'utf-8');
     const rows = this.parseCSV(data);
 
     logger.info(`Batch size: ${batchSize}`);
@@ -25,7 +18,7 @@ class ImageProcessor {
 
     const rawList = rows.map(row => ({
       index: row.index,
-      id: row.id,
+      _id: row.id,
       url: row.url,
       thumbnail: null,
     }));
@@ -36,12 +29,12 @@ class ImageProcessor {
 
     for (const chunk of chunks) {
       try {
-        const images = await this.processChunk(chunk);
+        const images = await this.createThumbnails(chunk);
 
         await ImageModel.insertMany(images, { ordered: false });
 
         logger.info(`Processed batch size: ${images.length}`);
-        logger.info(`Last processed index: ${chunk[chunk.length - 1].index}, Last processed ID: ${chunk[chunk.length - 1].id}`);
+        logger.info(`Last processed index: ${chunk[chunk.length - 1].index}, Last processed ID: ${chunk[chunk.length - 1]._id}`);
 
       } catch (error) {
         logger.error(`Error processing batch: ${error.message}`);
@@ -49,24 +42,26 @@ class ImageProcessor {
     }
   }
 
-  async processChunk(rawEntities) {
-    const tasks = rawEntities.map(rawEntity => this.createThumbnail(rawEntity));
+  async createThumbnails(rows) {
+    const thumbnails = rows.map(row => this.createThumbnail(row));
 
-    return Promise.all(tasks);
+    return Promise.all(thumbnails);
   }
 
-  async createThumbnail(rawEntity) {
+  async createThumbnail({ _id, index, url }) {
     try {
-      const response = await axios.get(rawEntity.url, { responseType: 'arraybuffer' });
+      const response = await axios.get(url, { responseType: 'arraybuffer' });
       const buffer = await sharp(response.data)
         .resize(100, 100)
         .toBuffer();
 
-      rawEntity.thumbnail = buffer;
-      delete rawEntity.url;
-      return rawEntity;
+      return {
+        _id: _id,
+        index: index,
+        thumbnail: buffer,
+      };
     } catch (error) {
-      logger.error(`Error creating thumbnail for ID ${rawEntity.id}: ${error.message}`);
+      logger.error(`Error creating thumbnail for ID ${_id}: ${error.message}`);
       return null;
     }
   }
