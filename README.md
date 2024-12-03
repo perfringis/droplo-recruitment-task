@@ -4,7 +4,8 @@
 
 Oto Twoje zadanie rekrutacyjne:
 
-W pliku image_processor.js znajduje sie klasa ImageProcessorTest jej jedynym zadaniem jest wczytanie pliku CSV iraz wygenerowanie miniaturek do pobranych zdjec z linkow i zapisanie ich do bazy danych mongodb.
+W pliku image_processor.js znajduje sie klasa ImageProcessorTest jej jedynym zadaniem jest wczytanie pliku CSV iraz
+wygenerowanie miniaturek do pobranych zdjec z linkow i zapisanie ich do bazy danych mongodb.
 
 Struktura pliku csv wyglada nastepujaco:
 
@@ -16,6 +17,34 @@ index, id, url
 Dla uproszczenia mozemy zlozyc ze pliki wieksze niz 120mb powinny byc odrzucane.
 
 Twoim zadaniem bedzie zastanowienie sie nad kodem tej klasy i wypisanie potencjanych bledow w kodzie oraz usprawnien.
+
+## How to run project?
+
+1. Clone repository:
+
+```
+git clone git@github.com:perfringis/droplo-recruitment-task.git
+```
+
+2. Configure `.env` file based on `.env.dev` template.
+
+3. Run docker configuration for development stage:
+
+```
+docker-compose -f docker-compose-dev.yml up
+```
+
+4. Run project by:
+
+```
+npm/yarn/pnpm run start
+```
+
+5. Run test by:
+
+```
+npm/yarn/pnpm run test
+```
 
 ## What is missing?
 
@@ -30,8 +59,9 @@ Twoim zadaniem bedzie zastanowienie sie nad kodem tej klasy i wypisanie potencja
 - The index.js file has a lot of responsibilities. The script should be split into smaller ones.
 
 - useNewUrlParser and useUnifiedTopology are deprecated.
+
 ```js
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 ```
 
 - The Program never runs/executes any csv file.
