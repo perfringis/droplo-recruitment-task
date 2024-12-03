@@ -1,81 +1,77 @@
 const { resolve } = require('path');
-const { promises } = require('fs');
-const { chunk } = require('lodash');
 const { default: axios } = require('axios');
 const sharp = require('sharp');
-const ImageModel = require(resolve('model/image'));
 
 const logger = require(resolve('config/logger'));
+const Image = require(resolve('model/image'));
+const CSVParser = require(resolve('utils/csv-parser'));
+const File = require(resolve('utils/file'));
+const { chunk } = require('lodash');
 
 class ImageProcessor {
 
-  async start(batchSize = 120) {
-    const data = await promises.readFile(resolve('data/data.csv'), 'utf-8');
-    const rows = this.parseCSV(data);
+  async process() {
+    const file = await File.of({
+      path: 'data/data.csv', limit: 120,
+    });
+    const batchSize = file.getLimit();
+
+    const rows = await CSVParser.parse(file);
 
     logger.info(`Batch size: ${batchSize}`);
     logger.info(`Items: ${rows.length}`);
 
-    const rawList = rows.map(row => ({
-      index: row.index,
-      _id: row.id,
-      url: row.url,
-      thumbnail: null,
-    }));
-
-    const chunks = chunk(rawList, batchSize);
+    const batches = chunk(rows, batchSize);
 
     logger.info('Starting batch...');
 
-    for (const chunk of chunks) {
+    await this.processBatches(batches);
+  }
+
+  async processBatches(batches) {
+    return Promise.all(batches.map(async (batch) => {
       try {
-        const images = await this.createThumbnails(chunk);
+        const batchOfImages = await this.processBatch(batch);
+        await Image.insertMany(batchOfImages, { ordered: false });
 
-        await ImageModel.insertMany(images, { ordered: false });
-
-        logger.info(`Processed batch size: ${images.length}`);
-        logger.info(`Last processed index: ${chunk[chunk.length - 1].index}, Last processed ID: ${chunk[chunk.length - 1]._id}`);
-
+        logger.info(`Processed batch size: ${batchOfImages.length}`);
+        logger.info(`Last processed index: ${batch[batch.length - 1].index}, Last processed ID: ${batch[batch.length - 1].id}`);
       } catch (error) {
-        logger.error(`Error processing batch: ${error.message}`);
+        throw new Error(`Could not process batches: ${error.message}`);
       }
+    }));
+  }
+
+  async processBatch(batch) {
+    return Promise.all(batch.map(async (row) => {
+      const { id, index, url } = row;
+      try {
+        const response = await this.downloadImage(url);
+        const thumbnail = await this.createThumbnail(response.data);
+
+        return { _id: id, thumbnail, index };
+      } catch (error) {
+        throw new Error(`Could not process batch and create thumbnail for Id ${id}: ${error.message}`);
+      }
+    }));
+  }
+
+  async downloadImage(url) {
+    try {
+      return await axios.get(url, { responseType: 'arraybuffer' });
+    } catch (error) {
+      throw new Error(`Could not download image: ${url}: ${error.message}`);
     }
   }
 
-  async createThumbnails(rows) {
-    const thumbnails = rows.map(row => this.createThumbnail(row));
-
-    return Promise.all(thumbnails);
-  }
-
-  async createThumbnail({ _id, index, url }) {
+  async createThumbnail(buffer) {
     try {
-      const response = await axios.get(url, { responseType: 'arraybuffer' });
-      const buffer = await sharp(response.data)
+      return await sharp(buffer)
         .resize(100, 100)
         .toBuffer();
-
-      return {
-        _id: _id,
-        index: index,
-        thumbnail: buffer,
-      };
     } catch (error) {
-      logger.error(`Error creating thumbnail for ID ${_id}: ${error.message}`);
-      return null;
+      throw new Error(`Could not create thumbnail: ${buffer}: ${error.message}`);
     }
-  }
-
-  parseCSV(data) {
-    const rows = data.split('\n');
-    const headers = rows.shift().split(',');
-    return rows.map(row => {
-      const values = row.split(',');
-      return headers.reduce((obj, header, index) => {
-        obj[header.trim()] = values[index]?.trim();
-        return obj;
-      }, {});
-    });
   }
 }
 

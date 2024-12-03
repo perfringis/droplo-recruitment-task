@@ -4,14 +4,14 @@ const mongoose = require(resolve('config/mongoose'));
 const logger = require(resolve('config/logger'));
 
 mongoose
-  .then(conn => {
+  .then(connection => {
     logger.info('MongoDB connected...');
   })
-  .catch(err => {
-    logger.error(`MongoDB error ${err}`);
+  .catch(error => {
+    logger.error(`MongoDB error ${error}`);
   });
 
 (async () => {
   const processor = new ImageProcessor();
-  await processor.start();
+  await processor.process();
 })();
